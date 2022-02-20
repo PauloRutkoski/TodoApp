@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: Todo Service
+  datasource:
+    url: jdbc:mysql://localhost:3306/db_todo
+    username: root
+    password: 123456
+  jpa:
+    show-sql: false
