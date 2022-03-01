@@ -26,7 +26,7 @@ public class AuthController {
 
     @PostMapping(value = "/register")
     public ResponseEntity<?> register(@RequestBody UserTO user) throws WsException {
-        User entity = service.register(user);
+        service.register(user);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
