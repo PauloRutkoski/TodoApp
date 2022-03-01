@@ -1,4 +1,4 @@
-package com.rutkoski.todo.expection;
+package com.rutkoski.todo.exception;
 
 import com.rutkoski.todo.to.MessageTO;
 import org.springframework.http.ResponseEntity;

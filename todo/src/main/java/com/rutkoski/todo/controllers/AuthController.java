@@ -1,7 +1,6 @@
 package com.rutkoski.todo.controllers;
 
-import com.rutkoski.todo.domain.User;
-import com.rutkoski.todo.expection.WsException;
+import com.rutkoski.todo.exception.WsException;
 import com.rutkoski.todo.service.AuthService;
 import com.rutkoski.todo.to.CredentialsTO;
 import com.rutkoski.todo.to.UserTO;
@@ -9,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/auth")

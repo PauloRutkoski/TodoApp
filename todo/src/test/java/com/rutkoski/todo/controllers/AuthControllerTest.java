@@ -1,75 +1,52 @@
 package com.rutkoski.todo.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rutkoski.todo.domain.User;
 import com.rutkoski.todo.service.AuthService;
+import com.rutkoski.todo.test.utils.TestBean;
 import com.rutkoski.todo.to.CredentialsTO;
 import com.rutkoski.todo.to.UserTO;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.RequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
-@AutoConfigureMockMvc
-public class AuthControllerTest {
+
+public class AuthControllerTest extends TestBean {
     @MockBean
     private AuthService authService;
-    @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
-    private MockMvc mockMvc;
+
+    private final String AUTH = "/auth";
+    private final String REGISTER = AUTH + "/register";
+    private final String REFRESH = AUTH + "/refresh";
 
     @Test
-    void callServiceAuthenticateOnAuthentication() throws Exception{
-        UserTO user = new UserTO("test", "123456");
+    void callAuthenticationSuccess() throws Exception {
         Mockito.when(authService.authenticate(ArgumentMatchers.any())).thenReturn(new CredentialsTO());
-
-        RequestBuilder request = MockMvcRequestBuilders
-                .post("/auth")
-                .content(objectMapper.writeValueAsString(new UserTO()))
-                .contentType(MediaType.APPLICATION_JSON);
-        MvcResult result = mockMvc.perform(request).andReturn();
+        MvcResult result = executePost(AUTH, new UserTO());
 
         Mockito.verify(authService, Mockito.times(1)).authenticate(ArgumentMatchers.any());
+        assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus());
     }
 
     @Test
-    void callServiceRegisterOnRegister() throws Exception{
+    void callRegisterSuccess() throws Exception {
         Mockito.when(authService.register(ArgumentMatchers.any())).thenReturn(new User());
-
-        RequestBuilder request = MockMvcRequestBuilders
-                .post("/auth/register")
-                .content(objectMapper.writeValueAsString(new UserTO()))
-                .contentType(MediaType.APPLICATION_JSON);
-        MvcResult result = mockMvc.perform(request).andReturn();
+        MvcResult result = executePost(REGISTER, new UserTO());
 
         Mockito.verify(authService, Mockito.times(1)).register(ArgumentMatchers.any());
+        assertEquals(HttpStatus.CREATED.value(), result.getResponse().getStatus());
     }
 
     @Test
-    void callServiceRefreshOnRefresh() throws Exception{
-        CredentialsTO credentialsTO = new CredentialsTO();
-        Mockito.when(authService.refreshAuthorization(ArgumentMatchers.any())).thenReturn(credentialsTO);
-
-        RequestBuilder request = MockMvcRequestBuilders
-                .post("/auth/refresh")
-                .content(objectMapper.writeValueAsString(credentialsTO))
-                .contentType(MediaType.APPLICATION_JSON);
-        MvcResult result = mockMvc.perform(request).andReturn();
+    void callRefreshSuccess() throws Exception {
+        Mockito.when(authService.refreshAuthorization(ArgumentMatchers.any())).thenReturn(new CredentialsTO());
+        MvcResult result = executePost(REFRESH, "Token");
 
         Mockito.verify(authService, Mockito.times(1)).refreshAuthorization(ArgumentMatchers.any());
+        assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus());
     }
 
 }
