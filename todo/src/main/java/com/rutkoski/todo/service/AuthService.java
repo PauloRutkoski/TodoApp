@@ -30,7 +30,7 @@ public class AuthService {
         return usernameToCredentialsTO(userTO.getUsername());
     }
 
-    public CredentialsTO usernameToCredentialsTO(String username){
+    private CredentialsTO usernameToCredentialsTO(String username){
         String token = jwtUtils.generateToken(username, TokenTypeEnum.AUTHORIZATION);
         String refreshToken = jwtUtils.generateToken(username, TokenTypeEnum.REFRESH);
         return new CredentialsTO(username, token, refreshToken);
@@ -59,14 +59,14 @@ public class AuthService {
     private void assertUserNotExists(String username) throws WsException {
         User entity = userService.findByUsername(username);
         if (entity != null) {
-            throw new WsException(HttpStatus.CONFLICT, "User already exists");
+            throw new WsException(HttpStatus.BAD_REQUEST, "User already exists");
         }
     }
 
     private void assertUserExists(String username) throws WsException {
         User entity = userService.findByUsername(username);
         if (entity == null) {
-            throw new WsException(HttpStatus.CONFLICT, "User not found");
+            throw new WsException(HttpStatus.NOT_FOUND, "User not found");
         }
     }
 
