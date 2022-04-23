@@ -16,11 +16,6 @@ public class UserService {
         return repository.save(entity);
     }
 
-    public User load(Long id){
-        Optional<User> entity = repository.findById(id);
-        return entity.orElse(null);
-    }
-
     public User findByUsername(String username){
         Optional<User> entity = repository.findByUsername(username);
         return entity.orElse(null);
