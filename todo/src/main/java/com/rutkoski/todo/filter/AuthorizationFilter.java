@@ -1,16 +1,15 @@
 package com.rutkoski.todo.filter;
 
 import com.auth0.jwt.exceptions.SignatureVerificationException;
-import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.rutkoski.todo.enums.TokenTypeEnum;
 import com.rutkoski.todo.utils.JwtUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.security.core.context.SecurityContextImpl;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -18,13 +17,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Map;
 
-@Component
-public class AuthorizationFilter extends OncePerRequestFilter {
-    @Autowired
-    private JwtUtils jwtUtils;
+public class AuthorizationFilter extends BasicAuthenticationFilter {
     private final String AUTH_HEADER = "Authorization";
+
+    public AuthorizationFilter(AuthenticationManager authenticationManager) {
+        super(authenticationManager);
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException {
@@ -41,7 +40,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
 
     private void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         if (checkExistsToken(request, response)) {
-            DecodedJWT decodedToken = jwtUtils.getDecodedToken(request.getHeader(AUTH_HEADER));
+            DecodedJWT decodedToken = JwtUtils.getDecodedToken(request.getHeader(AUTH_HEADER));
             setUpSpringAuthentication(decodedToken);
         } else {
             SecurityContextHolder.clearContext();
@@ -51,11 +50,13 @@ public class AuthorizationFilter extends OncePerRequestFilter {
 
     private void setUpSpringAuthentication(DecodedJWT decodedToken) {
         UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(decodedToken.getSubject(), null, new ArrayList<>());
-        SecurityContextHolder.getContext().setAuthentication(auth);
+        SecurityContext context = new SecurityContextImpl();
+        context.setAuthentication(auth);
+        SecurityContextHolder.setContext(context);
     }
 
     private boolean checkExistsToken(HttpServletRequest request, HttpServletResponse response) {
         String authenticationHeader = request.getHeader(AUTH_HEADER);
-        return !(authenticationHeader == null);
+        return authenticationHeader != null;
     }
 }

@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 public class AuthService {
     @Autowired
     private UserService userService;
-    @Autowired
+
     private JwtUtils jwtUtils;
 
     public User register(UserTO userTO) throws WsException {
@@ -25,14 +25,14 @@ public class AuthService {
         return userService.persist(entity);
     }
 
-    public CredentialsTO authenticate(UserTO userTO) throws WsException  {
+    public CredentialsTO authenticate(UserTO userTO) throws WsException {
         validateCredentials(userTO);
         return usernameToCredentialsTO(userTO.getUsername());
     }
 
-    private CredentialsTO usernameToCredentialsTO(String username){
-        String token = jwtUtils.generateToken(username, TokenTypeEnum.AUTHORIZATION);
-        String refreshToken = jwtUtils.generateToken(username, TokenTypeEnum.REFRESH);
+    private CredentialsTO usernameToCredentialsTO(String username) {
+        String token = JwtUtils.generateToken(username, TokenTypeEnum.AUTHORIZATION);
+        String refreshToken = JwtUtils.generateToken(username, TokenTypeEnum.REFRESH);
         return new CredentialsTO(username, token, refreshToken);
     }
 
@@ -41,7 +41,7 @@ public class AuthService {
         if (entity == null) {
             throw new WsException(HttpStatus.NOT_FOUND, "User not found");
         }
-        if(!matchPasswords(userTO.getPassword(), entity.getPassword())){
+        if (!matchPasswords(userTO.getPassword(), entity.getPassword())) {
             throw new WsException(HttpStatus.BAD_REQUEST, "Invalid Credentials");
         }
     }
@@ -70,8 +70,8 @@ public class AuthService {
         }
     }
 
-    public CredentialsTO refreshAuthorization(String refreshToken) throws WsException{
-        DecodedJWT decodedJWT = jwtUtils.getDecodedToken(refreshToken);
+    public CredentialsTO refreshAuthorization(String refreshToken) throws WsException {
+        DecodedJWT decodedJWT = JwtUtils.getDecodedToken(refreshToken);
         String username = decodedJWT.getSubject();
         assertUserExists(username);
         return usernameToCredentialsTO(username);

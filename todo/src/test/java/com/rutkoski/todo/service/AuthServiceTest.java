@@ -3,7 +3,6 @@ package com.rutkoski.todo.service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.rutkoski.todo.domain.User;
 import com.rutkoski.todo.enums.TokenTypeEnum;
 import com.rutkoski.todo.exception.WsException;
@@ -12,27 +11,37 @@ import com.rutkoski.todo.to.CredentialsTO;
 import com.rutkoski.todo.to.UserTO;
 import com.rutkoski.todo.utils.JwtUtils;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Date;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class AuthServiceTest extends TestBean {
     @Autowired
     private AuthService authService;
-    @SpyBean
-    private JwtUtils jwtUtils;
     @MockBean
     private UserService userService;
+    private static MockedStatic<JwtUtils> jwtUtils;
+
+    @BeforeAll
+    static void beforeAll() {
+        jwtUtils = Mockito.mockStatic(JwtUtils.class, Mockito.CALLS_REAL_METHODS);
+    }
+
+    @BeforeEach
+    void beforeEach() {
+        jwtUtils.reset();
+    }
 
     @Test
     void registerWhenUserAlreadyExists() {
@@ -83,8 +92,8 @@ class AuthServiceTest extends TestBean {
     void authenticateSuccess() throws WsException {
         final String authorization = "1";
         final String refresh = "2";
-        Mockito.when(jwtUtils.generateToken(ArgumentMatchers.any(), ArgumentMatchers.eq(TokenTypeEnum.AUTHORIZATION) )).thenReturn(authorization);
-        Mockito.when(jwtUtils.generateToken(ArgumentMatchers.any(), ArgumentMatchers.eq(TokenTypeEnum.REFRESH))).thenReturn(refresh);
+        jwtUtils.when(() -> JwtUtils.generateToken(ArgumentMatchers.any(), ArgumentMatchers.eq(TokenTypeEnum.AUTHORIZATION))).thenReturn(authorization);
+        jwtUtils.when(() -> JwtUtils.generateToken(ArgumentMatchers.any(), ArgumentMatchers.eq(TokenTypeEnum.REFRESH))).thenReturn(refresh);
 
         UserTO userTO = new UserTO("user", "123456");
         User dbUser = new User(1L, "user", new BCryptPasswordEncoder().encode("123456"));
@@ -116,7 +125,7 @@ class AuthServiceTest extends TestBean {
 
     @Test
     void refreshAuthorizationNotFoundUser() {
-        String token = jwtUtils.generateToken("user", TokenTypeEnum.REFRESH);
+        String token = JwtUtils.generateToken("user", TokenTypeEnum.REFRESH);
         Mockito.when(userService.findByUsername(ArgumentMatchers.any())).thenReturn(null);
 
         WsException exception = Assertions.assertThrows(WsException.class, () -> {
@@ -127,14 +136,14 @@ class AuthServiceTest extends TestBean {
     }
 
     @Test
-    void refreshAuthorizationSuccess() throws WsException{
+    void refreshAuthorizationSuccess() throws WsException {
         final String authorization = "1";
         final String refresh = "2";
         final String username = "user";
-        String token = jwtUtils.generateToken(username, TokenTypeEnum.REFRESH);
+        String token = JwtUtils.generateToken(username, TokenTypeEnum.REFRESH);
 
-        Mockito.when(jwtUtils.generateToken(ArgumentMatchers.any(), ArgumentMatchers.eq(TokenTypeEnum.AUTHORIZATION) )).thenReturn(authorization);
-        Mockito.when(jwtUtils.generateToken(ArgumentMatchers.any(), ArgumentMatchers.eq(TokenTypeEnum.REFRESH))).thenReturn(refresh);
+        jwtUtils.when(() -> JwtUtils.generateToken(ArgumentMatchers.any(), ArgumentMatchers.eq(TokenTypeEnum.AUTHORIZATION))).thenReturn(authorization);
+        jwtUtils.when(() -> JwtUtils.generateToken(ArgumentMatchers.any(), ArgumentMatchers.eq(TokenTypeEnum.REFRESH))).thenReturn(refresh);
         Mockito.when(userService.findByUsername(ArgumentMatchers.any())).thenReturn(new User());
 
         CredentialsTO credentialsTO = authService.refreshAuthorization(token);

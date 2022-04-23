@@ -4,48 +4,48 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.rutkoski.todo.enums.TokenTypeEnum;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import java.util.Date;
-import java.util.Map;
 
-@Component
 public class JwtUtils {
-    @Value("${jwt.exp_token}")
-    private Long JWT_TOKEN_VALIDITY;
-    @Value("${jwt.secret}")
-    private String secret;
+    private final static String PREFIX = "Bearer";
+    private final static Long JWT_TOKEN_VALIDITY = 1L;
+    private final static Long JWT_REFRESH_VALIDITY = 168L;
+    private final static String SECRET = "94c6167c-2b81-4fa2-9c2a-679d118f9fb9";
 
-    public String generateToken(String subject, TokenTypeEnum type) {
+    public static String generateToken(String subject, TokenTypeEnum type) {
         return JWT.create().withSubject(subject).withIssuedAt(new Date(System.currentTimeMillis()))
                 .withExpiresAt(getExpiresAtDefault(type))
                 .sign(getAlgorithm());
     }
 
-    public DecodedJWT getDecodedToken(String token) throws JWTVerificationException {
-        if (token == null || token.isEmpty()) {
+    public static DecodedJWT getDecodedToken(String token) throws JWTVerificationException {
+        if (token == null || token.trim().isEmpty()) {
             throw new JWTVerificationException("Not valid token structure");
         }
+        token = token.replaceAll(PREFIX, "").trim();
         JWTVerifier verifier = JWT.require(getAlgorithm()).build();
         return verifier.verify(token);
     }
 
-    private Algorithm getAlgorithm() {
-        return Algorithm.HMAC512(secret);
+    private static Algorithm getAlgorithm() {
+        return Algorithm.HMAC512(SECRET);
     }
 
-    private Date getExpiresAtDefault(TokenTypeEnum type) {
+    private static Date getExpiresAtDefault(TokenTypeEnum type) {
         if (type == TokenTypeEnum.AUTHORIZATION) {
-           return new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY);
+            return expireDateFromHours(JWT_TOKEN_VALIDITY);
         }
-        return null;
+        return expireDateFromHours(JWT_REFRESH_VALIDITY);
     }
 
-    private Boolean isTokenExpired(DecodedJWT decodedJWT, TokenTypeEnum type) {
+    private static Date expireDateFromHours(Long hours) {
+        return new Date(System.currentTimeMillis() + hours * 60 * 60 * 1000);
+    }
+
+    private static Boolean isTokenExpired(DecodedJWT decodedJWT, TokenTypeEnum type) {
         final Date expiration = decodedJWT.getExpiresAt();
         if (type == TokenTypeEnum.AUTHORIZATION) {
             return expiration.before(getExpiresAtDefault(type));
