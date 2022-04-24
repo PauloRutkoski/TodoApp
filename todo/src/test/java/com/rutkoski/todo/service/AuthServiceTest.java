@@ -3,7 +3,7 @@ package com.rutkoski.todo.service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.rutkoski.todo.domain.User;
+import com.rutkoski.todo.model.User;
 import com.rutkoski.todo.enums.TokenTypeEnum;
 import com.rutkoski.todo.exception.WsException;
 import com.rutkoski.todo.test.utils.TestBean;

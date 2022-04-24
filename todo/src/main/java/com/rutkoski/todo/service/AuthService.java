@@ -1,7 +1,7 @@
 package com.rutkoski.todo.service;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.rutkoski.todo.domain.User;
+import com.rutkoski.todo.model.User;
 import com.rutkoski.todo.enums.TokenTypeEnum;
 import com.rutkoski.todo.exception.WsException;
 import com.rutkoski.todo.to.CredentialsTO;

@@ -1,6 +1,6 @@
 package com.rutkoski.todo.service;
 
-import com.rutkoski.todo.domain.User;
+import com.rutkoski.todo.model.User;
 import com.rutkoski.todo.repository.UserRepository;
 import com.rutkoski.todo.test.utils.TestBean;
 import org.junit.jupiter.api.Assertions;

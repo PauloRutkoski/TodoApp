@@ -1,6 +1,6 @@
 package com.rutkoski.todo.controllers;
 
-import com.rutkoski.todo.domain.User;
+import com.rutkoski.todo.model.User;
 import com.rutkoski.todo.service.AuthService;
 import com.rutkoski.todo.test.utils.TestBean;
 import com.rutkoski.todo.to.CredentialsTO;

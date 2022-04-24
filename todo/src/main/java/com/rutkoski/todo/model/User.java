@@ -1,11 +1,10 @@
-package com.rutkoski.todo.domain;
+package com.rutkoski.todo.model;
 
 import com.sun.istack.NotNull;
 import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Objects;
 
 @Entity
 @Table(name = "users")

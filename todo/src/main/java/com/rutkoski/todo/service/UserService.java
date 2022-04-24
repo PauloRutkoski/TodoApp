@@ -1,6 +1,6 @@
 package com.rutkoski.todo.service;
 
-import com.rutkoski.todo.domain.User;
+import com.rutkoski.todo.model.User;
 import com.rutkoski.todo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,6 @@
 package com.rutkoski.todo.repository;
 
-import com.rutkoski.todo.domain.User;
+import com.rutkoski.todo.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
