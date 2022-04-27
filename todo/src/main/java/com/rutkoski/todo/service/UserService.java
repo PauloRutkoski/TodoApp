@@ -12,11 +12,11 @@ public class UserService {
     @Autowired
     private UserRepository repository;
 
-    public User persist(User entity){
+    public User persist(User entity) {
         return repository.save(entity);
     }
 
-    public User findByUsername(String username){
+    public User findByUsername(String username) {
         Optional<User> entity = repository.findByUsername(username);
         return entity.orElse(null);
     }

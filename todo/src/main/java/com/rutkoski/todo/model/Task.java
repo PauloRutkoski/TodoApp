@@ -24,6 +24,6 @@ public class Task {
     @Enumerated(EnumType.STRING)
     private TaskStatus status;
     @ManyToOne
-    @JoinColumn(name = "user_id",table = "users", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 }

@@ -1,14 +1,15 @@
 package com.rutkoski.todo.service;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.rutkoski.todo.model.User;
 import com.rutkoski.todo.enums.TokenTypeEnum;
-import com.rutkoski.todo.exception.WsException;
+import com.rutkoski.todo.exception.CustomException;
+import com.rutkoski.todo.exception.InvalidDataException;
+import com.rutkoski.todo.exception.NotFoundException;
+import com.rutkoski.todo.model.User;
 import com.rutkoski.todo.to.CredentialsTO;
 import com.rutkoski.todo.to.UserTO;
 import com.rutkoski.todo.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,13 +20,13 @@ public class AuthService {
 
     private JwtUtils jwtUtils;
 
-    public User register(UserTO userTO) throws WsException {
+    public User register(UserTO userTO) throws CustomException {
         assertUserNotExists(userTO.getUsername());
         User entity = new User(null, userTO.getUsername(), encryptPassword(userTO.getPassword()));
         return userService.persist(entity);
     }
 
-    public CredentialsTO authenticate(UserTO userTO) throws WsException {
+    public CredentialsTO authenticate(UserTO userTO) throws CustomException {
         validateCredentials(userTO);
         return usernameToCredentialsTO(userTO.getUsername());
     }
@@ -36,13 +37,13 @@ public class AuthService {
         return new CredentialsTO(username, token, refreshToken);
     }
 
-    private void validateCredentials(UserTO userTO) throws WsException {
+    private void validateCredentials(UserTO userTO) throws CustomException {
         User entity = userService.findByUsername(userTO.getUsername());
         if (entity == null) {
-            throw new WsException(HttpStatus.NOT_FOUND, "User not found");
+            throw new NotFoundException("User not found");
         }
         if (!matchPasswords(userTO.getPassword(), entity.getPassword())) {
-            throw new WsException(HttpStatus.BAD_REQUEST, "Invalid Credentials");
+            throw new InvalidDataException("Invalid Credentials");
         }
     }
 
@@ -56,21 +57,21 @@ public class AuthService {
         return encoder.matches(memoryPassword, dbPassword);
     }
 
-    private void assertUserNotExists(String username) throws WsException {
+    private void assertUserNotExists(String username) throws InvalidDataException {
         User entity = userService.findByUsername(username);
         if (entity != null) {
-            throw new WsException(HttpStatus.BAD_REQUEST, "User already exists");
+            throw new InvalidDataException("User already exists");
         }
     }
 
-    private void assertUserExists(String username) throws WsException {
+    private void assertUserExists(String username) throws CustomException {
         User entity = userService.findByUsername(username);
         if (entity == null) {
-            throw new WsException(HttpStatus.NOT_FOUND, "User not found");
+            throw new NotFoundException("User not found");
         }
     }
 
-    public CredentialsTO refreshAuthorization(String refreshToken) throws WsException {
+    public CredentialsTO refreshAuthorization(String refreshToken) throws CustomException {
         DecodedJWT decodedJWT = JwtUtils.getDecodedToken(refreshToken);
         String username = decodedJWT.getSubject();
         assertUserExists(username);
