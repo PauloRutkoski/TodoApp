@@ -18,15 +18,16 @@ public class TaskValidator extends BaseValidator<Task> {
     @Override
     public boolean isValid(Task entity) {
         task = entity;
-        if (task == null) {
-            addError("The task has no value");
-            return false;
-        }
+        resetErrors();
         validate();
         return !hasErrors();
     }
 
     private void validate() {
+        if (task == null) {
+            addError("The task has no value");
+            return;
+        }
         validateTitle();
         validateStatus();
         validatePosition();

@@ -29,6 +29,7 @@ class TaskValidatorTest extends BasicTestBean {
         validator.resetErrors();
     }
 
+
     @Test
     void resetErrors_ErrorsNotEmpty_CleanErrors() {
         validator.addError("testError");
@@ -37,7 +38,6 @@ class TaskValidatorTest extends BasicTestBean {
 
         assertEquals(new ArrayList<>(), validator.errors);
     }
-
 
     @Test
     void hasErrors_ErrorsNotEmpty_ReturnTrue() {
@@ -53,6 +53,15 @@ class TaskValidatorTest extends BasicTestBean {
         validator.resetErrors();
 
         assertFalse(validator.hasErrors());
+    }
+
+    @Test
+    void isValid_ErrorsAreFilled_ResetErrorsBeforeStart() {
+        boolean isValid = validator.isValid(null);
+        isValid = validator.isValid(getModelTask());
+
+        assertFalse(validator.hasErrors());
+        assertTrue(isValid);
     }
 
     @Test
