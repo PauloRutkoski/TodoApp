@@ -6,8 +6,7 @@ import java.util.List;
 public abstract class BaseValidator<T> implements Validator<T> {
     List<String> errors;
 
-    @Override
-    public void addError(String message) {
+    protected void addError(String message) {
         if(errors == null){
             errors = new ArrayList<>();
         }

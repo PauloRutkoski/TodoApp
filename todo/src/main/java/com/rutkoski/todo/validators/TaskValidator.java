@@ -40,7 +40,7 @@ public class TaskValidator extends BaseValidator<Task> {
     }
 
     private void validatePosition() {
-        if (task.getPosition() == null) {
+        if (task.getPosition() == null || task.getPosition() < 0L) {
             addError("A position value should be informed");
         }
     }
