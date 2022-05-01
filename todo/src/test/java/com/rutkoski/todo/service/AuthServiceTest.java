@@ -7,7 +7,7 @@ import com.rutkoski.todo.enums.TokenTypeEnum;
 import com.rutkoski.todo.exception.InvalidDataException;
 import com.rutkoski.todo.exception.NotFoundException;
 import com.rutkoski.todo.model.User;
-import com.rutkoski.todo.test.utils.TestBean;
+import com.rutkoski.todo.test.utils.MockTestBean;
 import com.rutkoski.todo.to.CredentialsTO;
 import com.rutkoski.todo.to.UserTO;
 import com.rutkoski.todo.utils.JwtUtils;
@@ -26,7 +26,7 @@ import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class AuthServiceTest extends TestBean {
+class AuthServiceTest extends MockTestBean {
     @Autowired
     private AuthService authService;
     @MockBean

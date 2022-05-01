@@ -1,6 +1,6 @@
 package com.rutkoski.todo.validators;
 
-import com.rutkoski.todo.test.utils.TestBean;
+import com.rutkoski.todo.test.utils.BasicTestBean;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-class BaseValidatorTest extends TestBean {
+class BaseValidatorTest extends BasicTestBean {
     BaseValidator<?> validator;
 
     @BeforeEach

@@ -3,7 +3,7 @@ package com.rutkoski.todo.validators;
 import com.rutkoski.todo.enums.TaskStatus;
 import com.rutkoski.todo.model.Task;
 import com.rutkoski.todo.model.User;
-import com.rutkoski.todo.test.utils.TestBean;
+import com.rutkoski.todo.test.utils.BasicTestBean;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class TaskValidatorTest extends TestBean {
+class TaskValidatorTest extends BasicTestBean {
     @Autowired
     private TaskValidator validator;
 

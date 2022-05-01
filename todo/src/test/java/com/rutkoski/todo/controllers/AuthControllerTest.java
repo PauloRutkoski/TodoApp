@@ -2,7 +2,7 @@ package com.rutkoski.todo.controllers;
 
 import com.rutkoski.todo.model.User;
 import com.rutkoski.todo.service.AuthService;
-import com.rutkoski.todo.test.utils.TestBean;
+import com.rutkoski.todo.test.utils.RestTestBean;
 import com.rutkoski.todo.to.CredentialsTO;
 import com.rutkoski.todo.to.UserTO;
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
-public class AuthControllerTest extends TestBean {
+public class AuthControllerTest extends RestTestBean {
     @MockBean
     private AuthService authService;
 

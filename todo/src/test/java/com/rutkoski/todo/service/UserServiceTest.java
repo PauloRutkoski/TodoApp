@@ -2,7 +2,7 @@ package com.rutkoski.todo.service;
 
 import com.rutkoski.todo.model.User;
 import com.rutkoski.todo.repository.UserRepository;
-import com.rutkoski.todo.test.utils.TestBean;
+import com.rutkoski.todo.test.utils.MockTestBean;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
@@ -12,7 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Optional;
 
-class UserServiceTest extends TestBean {
+class UserServiceTest extends MockTestBean {
     @Autowired
     private UserService service;
     @MockBean
