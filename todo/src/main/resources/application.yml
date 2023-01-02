@@ -2,8 +2,6 @@ spring:
   application:
     name: Todo Service
   datasource:
-    url: jdbc:mysql://localhost:3306/db_todo
-    username: root
-    password: 123456
+    jndi-name: java:comp/env/jdbc/TodoDataSource
   jpa:
     show-sql: false
