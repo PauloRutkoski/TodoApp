@@ -36,7 +36,7 @@ class TaskServiceTest extends MockTestBean {
     private TaskValidator validator;
 
     private Task getModelTask() {
-        return new Task(1L, "Title", 1L, TaskStatus.UNSELECTED, getModelUser());
+        return new Task(1L, "Title", 1L, TaskStatus.UNDONE, getModelUser());
     }
 
     private User getModelUser() {
@@ -136,9 +136,9 @@ class TaskServiceTest extends MockTestBean {
 
     @Test
     void updateStatus_ValidParameters_CallUpdateStatus() {
-        service.updateStatus(1L, TaskStatus.UNSELECTED);
+        service.updateStatus(1L, TaskStatus.UNDONE);
 
-        Mockito.verify(repository).updateStatus(1L, TaskStatus.UNSELECTED);
+        Mockito.verify(repository).updateStatus(1L, TaskStatus.UNDONE);
     }
 
     @Test

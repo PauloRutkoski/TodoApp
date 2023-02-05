@@ -27,11 +27,11 @@ class TaskControllerTest extends RestTestBean {
     private TaskService service;
 
     private TaskTO getModelTaskTO() {
-        return new TaskTO(1L, "Title", 1L, TaskStatus.UNSELECTED);
+        return new TaskTO(1L, "Title", 1L, TaskStatus.UNDONE);
     }
 
     private Task getModelTask() {
-        return new Task(1L, "Title", 1L, TaskStatus.UNSELECTED, getModelUser());
+        return new Task(1L, "Title", 1L, TaskStatus.UNDONE, getModelUser());
     }
 
     private User getModelUser() {
@@ -111,9 +111,9 @@ class TaskControllerTest extends RestTestBean {
 
     @Test
     void updateStatus_StatusWithValue_ReturnOk() throws Exception  {
-        MvcResult result = executePatch("/tasks/status/1", TaskStatus.UNSELECTED);
+        MvcResult result = executePatch("/tasks/status/1", TaskStatus.UNDONE);
 
-        Mockito.verify(service).updateStatus(1L,TaskStatus.UNSELECTED);
+        Mockito.verify(service).updateStatus(1L,TaskStatus.UNDONE);
         Assertions.assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus());
     }
 

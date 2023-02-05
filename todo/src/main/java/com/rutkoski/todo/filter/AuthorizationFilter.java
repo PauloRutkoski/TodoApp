@@ -1,6 +1,7 @@
 package com.rutkoski.todo.filter;
 
 import com.auth0.jwt.exceptions.SignatureVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.rutkoski.todo.utils.JwtUtils;
 import org.springframework.http.HttpStatus;
@@ -32,6 +33,9 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
         } catch (SignatureVerificationException e) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.getWriter().write("Invalid Credentials");
+        } catch (TokenExpiredException e) {
+        	response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        	response.getWriter().write(e.getMessage());
         } catch (Exception e) {
             response.setStatus(HttpStatus.FORBIDDEN.value());
             response.getWriter().write(e.getMessage());

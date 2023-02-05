@@ -8,9 +8,11 @@ import com.rutkoski.todo.repository.TaskRepository;
 import com.rutkoski.todo.utils.Context;
 import com.rutkoski.todo.validators.TaskValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,9 +35,18 @@ public class TaskService {
         Optional<Task> entity = repository.findById(id);
         return entity.orElse(null);
     }
+    
+    public List<Task> findAllByUser() {
+    	Sort sort = Sort.by(Order.desc("position"));
+    	Task ex = new Task();
+    	ex.setUser(context.getUser());
+        return repository.findAll(Example.of(ex), sort);
+
+    }
 
     public List<Task> findPaginatedOrderedByPosition(int page) {
-        Page<Task> result = repository.findAllByUserId(getUserId(), PageRequest.of(page, 20, Sort.by("position").descending()));
+    	Sort sort = Sort.by(Order.desc("position"));
+        Page<Task> result = repository.findAllByUserId(getUserId(), PageRequest.of(page, 20, sort));
         return result.getContent();
     }
 

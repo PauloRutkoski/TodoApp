@@ -17,7 +17,7 @@ class TaskValidatorTest extends BasicTestBean {
     private TaskValidator validator;
 
     private Task getModelTask(){
-        return new Task(1L, "Title", 1L, TaskStatus.UNSELECTED, getModelUser());
+        return new Task(1L, "Title", 1L, TaskStatus.UNDONE, getModelUser());
     }
 
     private User getModelUser(){

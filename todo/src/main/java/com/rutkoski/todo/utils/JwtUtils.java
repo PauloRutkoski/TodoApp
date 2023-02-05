@@ -11,7 +11,7 @@ import java.util.Date;
 
 public class JwtUtils {
     private final static String PREFIX = "Bearer";
-    private final static Long JWT_TOKEN_VALIDITY = 1L;
+    private final static Long JWT_TOKEN_VALIDITY = 2L;
     private final static Long JWT_REFRESH_VALIDITY = 168L;
     private final static String SECRET = "94c6167c-2b81-4fa2-9c2a-679d118f9fb9";
 
@@ -43,13 +43,5 @@ public class JwtUtils {
 
     private static Date expireDateFromHours(Long hours) {
         return new Date(System.currentTimeMillis() + hours * 60 * 60 * 1000);
-    }
-
-    private static Boolean isTokenExpired(DecodedJWT decodedJWT, TokenTypeEnum type) {
-        final Date expiration = decodedJWT.getExpiresAt();
-        if (type == TokenTypeEnum.AUTHORIZATION) {
-            return expiration.before(getExpiresAtDefault(type));
-        }
-        return false;
     }
 }
