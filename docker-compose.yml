@@ -14,12 +14,8 @@ services:
     networks:
       - default
   appserver:
-    image: tomcat:9.0.70-jdk11-corretto
+    build: ./todo/
     container_name: appserver
-    volumes:
-      - ./todo/src/main/resources/server-conf/server.xml:/usr/local/tomcat/conf/server.xml
-      - ./todo/src/main/resources/server-conf/context.xml:/usr/local/tomcat/conf/context.xml
-      - ./todo/target/todo.war:/usr/local/tomcat/webapps/todo.war
     ports:
       - "8080:8080"
     depends_on:
